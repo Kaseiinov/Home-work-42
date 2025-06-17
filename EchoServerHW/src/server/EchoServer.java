@@ -1,5 +1,7 @@
 package server;
 
+import com.github.javafaker.Faker;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,7 +30,9 @@ public class EchoServer {
             System.out.println("Server started");
             while(!serverSocket.isClosed()){
                 Socket clientSocket = serverSocket.accept();
+                Faker faker = new Faker();
                 connectedClients.add(clientSocket);
+                System.out.println("Generated name: " + faker.name().fullName());
                 pool.submit(() -> {
                     try {
                         ServerFunction serverFunction = new ServerFunction(connectedClients);
