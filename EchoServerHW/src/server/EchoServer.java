@@ -28,7 +28,7 @@ public class EchoServer {
             while(!serverSocket.isClosed()){
                 Socket clientSocket = serverSocket.accept();
                 Faker faker = new Faker(new Locale("ru"));
-                String name = faker.name().fullName();
+                String name = faker.name().firstName();
                 connectedClients.put(name, clientSocket);
                 System.out.println(name);
                 pool.submit(() -> {
