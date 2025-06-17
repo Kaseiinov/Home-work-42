@@ -33,10 +33,7 @@ public class EchoServer {
                     }
                 });
             }
-//            try (Socket socket = serverSocket.accept()) {
-//                System.out.println("Client connected");
-//
-//            }
+
         } catch (NoSuchElementException nse) {
             System.out.println("Client dropped");
         } catch (IOException io) {
