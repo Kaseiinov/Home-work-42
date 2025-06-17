@@ -2,10 +2,17 @@ package server;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ServerFunction {
+    private final List<Socket> connectedClients;
+
+    public ServerFunction(List<Socket> connectedClients) {
+        this.connectedClients = connectedClients;
+    }
 
     public void handle(Socket socket) throws IOException {
         System.out.printf("Client %s connected%n", socket);
@@ -18,6 +25,7 @@ public class ServerFunction {
             sendResponse(writer, "Hello " + socket);
             while (true) {
                 String message = reader.nextLine().strip();
+                sendResponseToEveryOne(connectedClients, message, socket);
                 System.out.println("Got message from client: " + message);
 
                 if (isQuitMsg(message) || isEmptyMsg(message)) {
@@ -31,6 +39,18 @@ public class ServerFunction {
             io.printStackTrace();
         }
         System.out.printf("Client %s disconnected%n", socket);
+    }
+
+    public void sendResponseToEveryOne(List<Socket> clients, String response, Socket sender){
+        for(Socket client : clients){
+            if(client == sender) continue;
+            try {
+                PrintWriter writer = getWriter(client);
+                sendResponse(writer, response);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Scanner getReader(Socket socket) throws IOException {

@@ -3,6 +3,8 @@ package server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -11,6 +13,7 @@ import java.util.concurrent.Executors;
 public class EchoServer {
     private final ExecutorService pool = Executors.newCachedThreadPool();
     private final int port;
+    private final List<Socket> connectedClients = new ArrayList<>();
 
     public EchoServer(int port) {
         this.port = port;
@@ -25,9 +28,10 @@ public class EchoServer {
             System.out.println("Server started");
             while(!serverSocket.isClosed()){
                 Socket clientSocket = serverSocket.accept();
+                connectedClients.add(clientSocket);
                 pool.submit(() -> {
                     try {
-                        ServerFunction serverFunction = new ServerFunction();
+                        ServerFunction serverFunction = new ServerFunction(connectedClients);
                         serverFunction.handle(clientSocket);
                     } catch (IOException e) {
                         e.printStackTrace();
