@@ -36,6 +36,14 @@ public class ServerFunction {
             io.printStackTrace();
         }
         System.out.printf("Client %s disconnected%n", socket);
+        removeClient(socket);
+    }
+
+    private void removeClient(Socket socket) {
+        String clientName = getClientNameBySocket(socket);
+        if (clientName != null) {
+            connectedClients.remove(clientName);
+        }
     }
 
     public String getClientNameBySocket(Socket socket){
